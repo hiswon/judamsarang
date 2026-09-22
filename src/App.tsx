@@ -87,7 +87,7 @@ export default function App() {
   const [showLoginForm, setShowLoginForm] = useState<boolean>(false);
   const [loginInputId, setLoginInputId] = useState<string>('');
   const [loginPassword, setLoginPassword] = useState<string>('');
-  const [visitorName, setVisitorName] = useState<string>(() => localStorage.getItem('journal_nickname') || '방문자');
+  const [visitorName] = useState<string>(() => localStorage.getItem('journal_nickname') || '방문자');
 
   // 게시글 관련 상태
   const [posts, setPosts] = useState<Post[]>([]);
