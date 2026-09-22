@@ -1,14 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import type { FormEvent, ChangeEvent, MouseEvent, TouchEvent } from 'react';
-import { initializeApp } from 'firebase/app';
 import { 
-  getAuth, 
   signInAnonymously, 
   onAuthStateChanged 
 } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { 
-  getFirestore, 
   collection, 
   addDoc, 
   onSnapshot, 
@@ -34,26 +31,12 @@ import {
   Check
 } from 'lucide-react';
 
-import './App.css'; // CSS 파일 불러오기
+// firebase.ts에서 auth와 db 가져오기
+import { auth, db } from './firebase';
+import './App.css';
 
 // ==========================================
-// 1. Firebase Config
-// ==========================================
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyBxtfEfVZ2FuUJraE6j4MJ2961aFLXkHl8",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "father-c31a0.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "father-c31a0",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "father-c31a0.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "786155447201",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:786155447201:web:6fd9b552e1b334ce2d21e0"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// ==========================================
-// 2. Type Definitions
+// Type Definitions
 // ==========================================
 export interface Comment {
   id: string;
@@ -87,7 +70,7 @@ interface PostCardProps {
 }
 
 // ==========================================
-// 3. Main Component
+// Main Component
 // ==========================================
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -143,7 +126,7 @@ export default function App() {
         };
       });
 
-      // 최신순 정렬 (위로 누적)
+      // 최신순 정렬
       fetchedPosts.sort((a, b) => {
         const timeA = a.createdAt?.toMillis() || 0;
         const timeB = b.createdAt?.toMillis() || 0;
@@ -515,7 +498,7 @@ export default function App() {
 }
 
 // ==========================================
-// 4. Post Card Component (5줄 넘어가면 접기)
+// Post Card Component
 // ==========================================
 function PostCard({ post, currentUserId, onToggleLike, onAddComment, onSelectTag }: PostCardProps) {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
