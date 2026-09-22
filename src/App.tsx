@@ -167,7 +167,7 @@ export default function App() {
       return;
     }
 
-    if (loginPassword !== '12345') {
+    if (loginPassword !== '123456') {
       alert("비밀번호가 올바르지 않습니다.");
       return;
     }
