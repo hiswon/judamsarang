@@ -12,6 +12,7 @@ import {
   addDoc, 
   onSnapshot, 
   doc, 
+  deleteDoc,
   updateDoc, 
   arrayUnion, 
   arrayRemove, 
@@ -31,8 +32,13 @@ import {
   ChevronUp, 
   LogOut,
   Lock,
+  Trash2,
+  BookOpen,
+  Info,
   Globe,
-  BookOpen
+  HeartHandshake,
+  CreditCard,
+  Sparkles
 } from 'lucide-react';
 
 import { auth, db } from './firebase';
@@ -73,8 +79,11 @@ export interface Post {
 interface PostCardProps {
   post: Post;
   currentUserId: string | null;
+  adminId: string;
   onToggleLike: (postId: string, currentLikes: string[]) => void;
   onAddComment: (postId: string, commentText: string) => void;
+  onDeleteComment: (postId: string, comment: Comment) => void;
+  onDeletePost: (postId: string) => void;
   onSelectTag: (tag: string) => void;
 }
 
@@ -82,9 +91,7 @@ interface PostCardProps {
 // Main Component
 // ==========================================
 export default function App() {
-  // Navigation State ('info': 전면 선교회 소개, 'journal': 기존 글 저장 게시판)
   const [activeTab, setActiveTab] = useState<'info' | 'journal'>('info');
-
   const [user, setUser] = useState<User | null>(null);
   const [adminId, setAdminId] = useState<string>('');
   
@@ -305,6 +312,17 @@ export default function App() {
     }
   };
 
+  // Delete Post
+  const handleDeletePost = async (postId: string) => {
+    if (!window.confirm("정말로 이 글을 삭제하시겠습니까?")) return;
+    try {
+      await deleteDoc(doc(db, 'posts', postId));
+    } catch (err) {
+      console.error("글 삭제 실패:", err);
+      alert("글 삭제 중 오류가 발생했습니다.");
+    }
+  };
+
   // Like Toggle
   const handleToggleLike = async (postId: string, currentLikes: string[]) => {
     const postRef = doc(db, 'posts', postId);
@@ -329,7 +347,7 @@ export default function App() {
     
     const newComment: Comment = {
       id: Date.now().toString(),
-      userId: user ? user.uid : 'visitor',
+      userId: user ? user.uid : 'visitor_' + Math.random().toString(36).substr(2, 5),
       userName: adminId ? `[관리자] ${adminId}` : visitorName,
       text: commentText.trim(),
       createdAt: new Date().toLocaleDateString('ko-KR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
@@ -341,6 +359,19 @@ export default function App() {
       });
     } catch (err) {
       console.error("댓글 추가 오류:", err);
+    }
+  };
+
+  // Comment Delete
+  const handleDeleteComment = async (postId: string, commentToDelete: Comment) => {
+    if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
+    const postRef = doc(db, 'posts', postId);
+    try {
+      await updateDoc(postRef, {
+        comments: arrayRemove(commentToDelete)
+      });
+    } catch (err) {
+      console.error("댓글 삭제 오류:", err);
     }
   };
 
@@ -358,9 +389,7 @@ export default function App() {
     <div className="app-container">
       {/* Top Header */}
       <header className="app-header">
-        <h1 className="app-title">
-          {activeTab === 'info' ? '탄자니아 선교회' : '공감과 기록'}
-        </h1>
+        <h1 className="app-title">NEW LIFE FOUNDATION</h1>
         <div className="header-user-info">
           {adminId ? (
             <>
@@ -376,6 +405,24 @@ export default function App() {
           )}
         </div>
       </header>
+
+      {/* Main Tab Navigation */}
+      <nav className="tab-navigation">
+        <button 
+          className={`tab-btn ${activeTab === 'info' ? 'active' : ''}`}
+          onClick={() => setActiveTab('info')}
+        >
+          <Info style={{ width: 16, height: 16 }} />
+          <span>선교회 소개</span>
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'journal' ? 'active' : ''}`}
+          onClick={() => setActiveTab('journal')}
+        >
+          <BookOpen style={{ width: 16, height: 16 }} />
+          <span>선교 일기 & 소식</span>
+        </button>
+      </nav>
 
       <main className="app-main">
         {/* 관리자 로그인 폼 */}
@@ -406,47 +453,155 @@ export default function App() {
           </section>
         )}
 
-        {/* TAB 1: 전면 선교회 소개 페이지 */}
+        {/* ==================== TAB 1: 선교회 소개 (전면 게시) ==================== */}
         {activeTab === 'info' && (
-          <article className="hero-card">
-            <div className="hero-header-banner">
-              <span className="sub-foundation-title">NEW LIFE FOUNDATION</span>
-              <h2 className="main-mission-title">탄자니아 선교회</h2>
-              <span style={{ fontSize: '0.875rem', opacity: 0.95 }}>Tanzania Mission</span>
+          <section className="info-tab-content">
+            <div className="hero-banner">
+              <div className="hero-badge">NEW LIFE FOUNDATION</div>
+              <h2 className="hero-title">탄자니아 선교회</h2>
+              <p className="hero-subtitle">Tanzania Mission</p>
             </div>
 
-            <div className="hero-body">
-              <p className="mission-paragraph">
-                본 선교회는 탄자니아(Moshi)를 중심으로 동아프리카를 복음화하고자하는 선교단체입니다.
-              </p>
-              
-              <p className="mission-paragraph">
-                지금 아프리카는 최첨단 과학문명이 발달한 오늘날 세계속에서도 과거 400년동안 식민지의 착취와 약탈과 노예로 땅이 황폐화되고 산업도, 상업도없이 가난과 질병과 무지 가운데서 비참하게 살아가는 곳입니다.
-              </p>
+            {/* 사진갤러리 및 현장 모습 */}
+            <div className="photo-section">
+              <div className="main-photo-card">
+                <img 
+                  src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop" 
+                  alt="탄자니아 아이들" 
+                  className="hero-image" 
+                />
+                <div className="photo-caption">사랑과 소망으로 자라나는 탄자니아 어린이들</div>
+              </div>
 
-              <div className="highlight-box">
-                <div className="highlight-title">🎯 핵심 선교 사역 목적</div>
-                <div className="highlight-desc">
-                  이러한 곳에 가장 효과적인 선교인 자라나는 청소년들(학원 선교를 통해서)에게 복음을 전하고 그리고 불치의 병이라 불리우는 에이즈 환자들에게 (의료선교를 통해서) 복음을 전해서 이들의 삶과 영혼을 구원하는데 목적을 하고 있습니다.
+              <div className="photo-grid">
+                <div className="grid-photo-item">
+                  <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=400&auto=format&fit=crop" alt="의료 선교" />
+                  <span>의료 & 복음 선교</span>
+                </div>
+                <div className="grid-photo-item">
+                  <img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=400&auto=format&fit=crop" alt="학원 선교" />
+                  <span>청소년 학원 선교</span>
                 </div>
               </div>
             </div>
 
-            <div className="footer-slogan">
-              A PLACE WHERE WORLD-TRANSFORMERS ARE TRANSFORMED
-            </div>
-          </article>
+            {/* 본문 소개 카드 */}
+            <article className="info-card">
+              <p className="info-intro">
+                본 선교회는 <strong>탄자니아(Moshi)</strong>를 중심으로 동아프리카를 복음화하고자하는 선교단체입니다.
+              </p>
+              
+              <div className="info-body">
+                <p>
+                  지금 아프리카는 최첨단 과학문명이 발달한 오늘날 세계속에서도 과거 400년동안 식민지의 착취와 약탈과 노예로 땅이 황폐화되고 산업도, 상업도없이 가난과 질병과 무지 가운데서 비참하게 살아가는 곳입니다.
+                </p>
+                <p>
+                  이러한 곳에 가장 효과적인 선교인 자라나는 청소년들(학원 선교를 통해서)에게 복음을 전하고 그리고 불치의 병이라 불리우는 에이즈 환자들에게 (의료선교를 통해서) 복음을 전해서 이들의 삶과 영혼을 구원하는데 목적을 하고 있습니다.
+                </p>
+              </div>
+
+              <div className="slogan-box">
+                <Globe style={{ width: 18, height: 18, display: 'inline-block', marginRight: 6 }} />
+                <span>A PLACE WHERE WORLD-TRANSFORMERS ARE TRANSFORMED</span>
+              </div>
+            </article>
+
+            {/* =======================================================
+                [추가 영역] 1. 본 선교회에 동참하는 길
+               ======================================================= */}
+            <article className="info-card section-card">
+              <div className="section-header-badge red-badge">
+                <HeartHandshake style={{ width: 16, height: 16 }} />
+                <span>본 선교회에 동참하는 길</span>
+              </div>
+
+              <div className="feature-list">
+                <div className="feature-item">
+                  <h4 className="feature-num">1. 가난한 가정의 자녀들이 학교에서 공부할 수 있도록 도와 주는 일.</h4>
+                  <p className="feature-desc">
+                    • 가난하여 학교에 다닐 수 없는 아이에게 하루 한끼 식사와 교재, 학용품 등을 제공하여 학교에 다닐 수 있게 함.
+                  </p>
+                </div>
+
+                <div className="feature-item">
+                  <h4 className="feature-num">2. 부모없는 고아들이 공부할 수 있도록 도와 주는 일.</h4>
+                  <p className="feature-desc">
+                    • 이 곳에는 에이즈나 말라리아 병으로 부모가 일찍 죽거나 그리고 성 교육 부재로 부모없는 고아가 많음.
+                  </p>
+                </div>
+
+                <div className="feature-item">
+                  <h4 className="feature-num">3. 에이즈 환자 가족이 생존할 수 있도록 도와 주는 일.</h4>
+                  <p className="feature-desc">
+                    • 아프리카에서 에이즈 환자가 가장 많은 곳 중 한 곳이 탄자니아이며(150만명 이상 추정) 이 에이즈에 걸린 환자들이 제대로 치료와 도움을 받지못하고 죽어가는 곳임.
+                  </p>
+                </div>
+              </div>
+            </article>
+
+            {/* =======================================================
+                [추가 영역] 2. 기도제목
+               ======================================================= */}
+            <article className="info-card section-card">
+              <div className="section-header-banner blue-banner">
+                <Sparkles style={{ width: 16, height: 16 }} />
+                <span>기도제목</span>
+              </div>
+
+              <div className="prayer-list">
+                <div className="prayer-item">
+                  <h4 className="prayer-title">1. 탄자니아 선교회를 위하여.</h4>
+                  <p className="prayer-desc">• 본 선교회를 통하여 이 땅 주민들이 복음을 받아들이고 영육간에 구원을 받게하소서.</p>
+                </div>
+
+                <div className="prayer-item">
+                  <h4 className="prayer-title">2. 탄자니아 사역을 위해서.</h4>
+                  <ul className="prayer-sublist">
+                    <li>1) 가난한 가정의 자녀들이 "학교에 가서 공부하고싶다"는 그들의 꿈이 이뤄지게 하소서.</li>
+                    <li>2) 부모없는 고아들이 최소한의 보호를 받고 다른 아이들처럼 학교에 다닐 수 있게 하소서.</li>
+                    <li>3) 에이즈 환자들에게 치료와 도움의 손길이 이어지게 하소서.</li>
+                  </ul>
+                </div>
+
+                <div className="prayer-item">
+                  <h4 className="prayer-title">3. 협력 선교사를 위하여.</h4>
+                  <p className="prayer-desc">• 본 선교회가 협력 선교사로 파송한 김상재 목사의 안전과 사역과 건강을 지켜주옵소서.</p>
+                </div>
+              </div>
+            </article>
+
+            {/* =======================================================
+                [추가 영역] 3. 선교 후원 계좌 안내
+               ======================================================= */}
+            <article className="info-card donate-card">
+              <div className="donate-header">
+                <CreditCard style={{ width: 18, height: 18 }} />
+                <span>선교 후원 계좌</span>
+              </div>
+
+              <div className="donate-box">
+                <p className="donate-info-text">탄자니아 선교와 후원에 동참해주실 분들을 기다립니다.</p>
+                {/* 필요에 따라 실제 계좌번호 및 상세 연락처로 수정할 수 있습니다 */}
+                <div className="account-details">
+                  <div className="account-row">
+                    <span className="account-label">후원 문의:</span>
+                    <span className="account-value">김상재 목사 / 탄자니아 선교회</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </section>
         )}
 
-        {/* TAB 2: 기존 글 저장/공감 게시판 */}
+        {/* ==================== TAB 2: 기존 글 저장앱 (선교 일기 & 소식) ==================== */}
         {activeTab === 'journal' && (
-          <>
+          <section className="journal-tab-content">
             {/* Search Bar */}
             <div className="search-container">
               <Search className="search-icon" />
               <input
                 type="text"
-                placeholder="태그나 키워드로 검색해보세요..."
+                placeholder="태그나 키워드로 소식을 검색해보세요..."
                 value={searchQuery}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                 className="search-input"
@@ -458,7 +613,7 @@ export default function App() {
               <section className="editor-card">
                 <input
                   type="text"
-                  placeholder="오늘 하루의 제목 (선택)"
+                  placeholder="오늘 소식의 제목 (선택)"
                   value={title}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
                   className="editor-title"
@@ -466,7 +621,7 @@ export default function App() {
 
                 <textarea
                   rows={4}
-                  placeholder="오늘 어떤 마음으로 하루를 보내셨나요? 편안하게 기록해보세요..."
+                  placeholder="탄자니아 현지 소식과 기도제목을 기록해주세요..."
                   value={content}
                   onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
                   className="editor-textarea"
@@ -497,7 +652,7 @@ export default function App() {
                 <form onSubmit={handleAddTag}>
                   <input
                     type="text"
-                    placeholder="태그 입력 후 Enter (#일상)"
+                    placeholder="태그 입력 후 Enter (#탄자니아)"
                     value={tagInput}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setTagInput(e.target.value)}
                     className="tag-input"
@@ -523,8 +678,8 @@ export default function App() {
                     </div>
 
                     <div className="option-group">
-                      <span>기분:</span>
-                      {['평온', '기쁨', '우울'].map((m) => (
+                      <span>상태:</span>
+                      {['평온', '기쁨', '은혜'].map((m) => (
                         <button
                           key={m}
                           type="button"
@@ -542,7 +697,7 @@ export default function App() {
                       type="button"
                       onClick={() => setIsCanvasOpen(true)}
                       className="tool-icon-btn"
-                      title="손그림 그리기"
+                      title="손그림 스케치"
                     >
                       <PenTool style={{ width: 16, height: 16 }} />
                     </button>
@@ -557,7 +712,7 @@ export default function App() {
             ) : (
               <div className="admin-notice">
                 <Lock style={{ width: 16, height: 16, display: 'block', margin: '0 auto 0.25rem' }} />
-                글 작성 권한은 지정된 관리자만 사용할 수 있습니다.
+                선교 소식 및 일기 작성 권한은 지정된 관리자만 사용할 수 있습니다.
               </div>
             )}
 
@@ -565,7 +720,7 @@ export default function App() {
             <section className="post-list">
               {filteredPosts.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '3rem 0', color: '#9E8E81', fontSize: '0.875rem' }}>
-                  {searchQuery ? '검색 결과가 없습니다.' : '등록된 이야기가 없습니다.'}
+                  {searchQuery ? '검색 결과가 없습니다.' : '등록된 선교 소식이 없습니다.'}
                 </div>
               ) : (
                 filteredPosts.map((post) => (
@@ -573,37 +728,19 @@ export default function App() {
                     key={post.id}
                     post={post}
                     currentUserId={user ? user.uid : 'anonymous_visitor'}
+                    adminId={adminId}
                     onToggleLike={handleToggleLike}
                     onAddComment={handleAddComment}
+                    onDeleteComment={handleDeleteComment}
+                    onDeletePost={handleDeletePost}
                     onSelectTag={(t) => setSearchQuery(t)}
                   />
                 ))
               )}
             </section>
-          </>
+          </section>
         )}
       </main>
-
-      {/* 하단 카테고리 탭 (Navigation Bar) */}
-      <nav className="bottom-nav">
-        <div className="nav-container">
-          <button 
-            className={`nav-item ${activeTab === 'info' ? 'active' : ''}`}
-            onClick={() => setActiveTab('info')}
-          >
-            <Globe style={{ width: 20, height: 20 }} />
-            <span>선교회 소개</span>
-          </button>
-          
-          <button 
-            className={`nav-item ${activeTab === 'journal' ? 'active' : ''}`}
-            onClick={() => setActiveTab('journal')}
-          >
-            <BookOpen style={{ width: 20, height: 20 }} />
-            <span>공감과 기록</span>
-          </button>
-        </div>
-      </nav>
 
       {/* Drawing Canvas Modal */}
       {isCanvasOpen && (
@@ -652,7 +789,16 @@ export default function App() {
 // ==========================================
 // Post Card Component
 // ==========================================
-function PostCard({ post, currentUserId, onToggleLike, onAddComment, onSelectTag }: PostCardProps) {
+function PostCard({ 
+  post, 
+  currentUserId, 
+  adminId, 
+  onToggleLike, 
+  onAddComment, 
+  onDeleteComment,
+  onDeletePost,
+  onSelectTag 
+}: PostCardProps) {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [showComments, setShowComments] = useState<boolean>(false);
   const [commentInput, setCommentInput] = useState<string>('');
@@ -683,11 +829,22 @@ function PostCard({ post, currentUserId, onToggleLike, onAddComment, onSelectTag
           <span className="badge-sm">{post.weather}</span>
           <span className="badge-sm">{post.mood}</span>
         </div>
-        <div>
-          {post.createdAt ? new Date(post.createdAt.toMillis()).toLocaleDateString('ko-KR', {
-            month: 'short',
-            day: 'numeric'
-          }) : '방금 전'}
+        <div className="header-right-actions">
+          <span>
+            {post.createdAt ? new Date(post.createdAt.toMillis()).toLocaleDateString('ko-KR', {
+              month: 'short',
+              day: 'numeric'
+            }) : '방금 전'}
+          </span>
+          {adminId && (
+            <button 
+              onClick={() => onDeletePost(post.id)} 
+              className="delete-icon-btn"
+              title="게시글 삭제"
+            >
+              <Trash2 style={{ width: 14, height: 14 }} />
+            </button>
+          )}
         </div>
       </div>
 
@@ -748,7 +905,18 @@ function PostCard({ post, currentUserId, onToggleLike, onAddComment, onSelectTag
                 <div key={comment.id} className="comment-item">
                   <div className="comment-header">
                     <span style={{ fontWeight: 600, color: '#3A2E2B' }}>{comment.userName}</span>
-                    <span>{comment.createdAt}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span>{comment.createdAt}</span>
+                      {(adminId || comment.userId === currentUserId) && (
+                        <button 
+                          onClick={() => onDeleteComment(post.id, comment)} 
+                          className="delete-comment-btn"
+                          title="댓글 삭제"
+                        >
+                          <X style={{ width: 12, height: 12 }} />
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <p className="comment-text">{comment.text}</p>
                 </div>
@@ -759,7 +927,7 @@ function PostCard({ post, currentUserId, onToggleLike, onAddComment, onSelectTag
           <form onSubmit={handleCommentSubmit} className="comment-form">
             <input
               type="text"
-              placeholder="댓글을 남겨보세요..."
+              placeholder="응원의 댓글을 남겨보세요..."
               value={commentInput}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setCommentInput(e.target.value)}
               className="comment-input"

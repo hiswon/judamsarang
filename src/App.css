@@ -12,7 +12,7 @@
   --btn-bg: #8C7A6B;
   --btn-hover: #726254;
   --like-color: #C85A5A;
-  --accent-color: #A3483B;
+  --accent-earth: #A65D37;
 }
 
 * {
@@ -30,7 +30,7 @@ body {
 
 .app-container {
   min-height: 100vh;
-  padding-bottom: 5rem; /* 하단 탭 바 영역 확보 */
+  padding-bottom: 4rem;
 }
 
 /* Header */
@@ -51,11 +51,9 @@ body {
 
 .app-title {
   font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--accent-earth);
 }
 
 .header-user-info {
@@ -97,136 +95,36 @@ body {
   cursor: pointer;
 }
 
-/* Navigation Tab Bar (하단 카테고리 탭) */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 40;
-  background-color: var(--bg-card);
-  border-top: 1px solid var(--border-color);
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.nav-container {
+/* Navigation Tabs */
+.tab-navigation {
   max-width: 36rem;
   margin: 0 auto;
   display: flex;
-  justify-content: space-around;
+  border-bottom: 2px solid var(--border-color);
+  background-color: var(--bg-card);
 }
 
-.nav-item {
+.tab-btn {
   flex: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.625rem 0;
+  gap: 0.5rem;
+  padding: 0.875rem 0;
   background: transparent;
   border: none;
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  gap: 0.25rem;
-}
-
-.nav-item.active {
-  color: var(--accent-color);
-  font-weight: 700;
-}
-
-/* Main Layout */
-.app-main {
-  max-width: 36rem;
-  margin: 0 auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-/* Landing / Mission Introduction Cards */
-.hero-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 1.25rem;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-}
-
-.hero-header-banner {
-  background-color: var(--btn-bg);
-  color: white;
-  padding: 1.5rem 1.25rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.sub-foundation-title {
-  font-size: 0.8125rem;
-  letter-spacing: 0.1em;
-  opacity: 0.9;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.main-mission-title {
-  font-size: 1.625rem;
-  font-weight: 800;
-  color: #FFF;
-}
-
-.hero-body {
-  padding: 1.5rem 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.mission-paragraph {
-  font-size: 0.9375rem;
-  line-height: 1.7;
-  color: var(--text-primary);
-  text-align: justify;
-  word-break: keep-all;
-}
-
-.highlight-box {
-  background-color: var(--bg-sub);
-  border-left: 4px solid var(--accent-color);
-  padding: 1rem;
-  border-radius: 0 0.75rem 0.75rem 0;
-  margin: 0.5rem 0;
-}
-
-.highlight-title {
   font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--accent-color);
-  margin-bottom: 0.375rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
 }
 
-.highlight-desc {
-  font-size: 0.8438rem;
-  line-height: 1.55;
-  color: var(--text-secondary);
-}
-
-.footer-slogan {
-  background-color: #2D2523;
-  color: #E5DEC9;
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  border-top: 1px solid var(--border-color);
+.tab-btn.active {
+  color: var(--accent-earth);
+  border-bottom-color: var(--accent-earth);
+  background-color: rgba(239, 236, 225, 0.4);
 }
 
 /* Auth Card */
@@ -292,6 +190,338 @@ body {
   font-size: 0.8125rem;
   color: var(--text-muted);
   border: 1px dashed var(--border-color);
+}
+
+/* Main Layout */
+.app-main {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Info Tab Components */
+.info-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.hero-banner {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.hero-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-earth);
+  letter-spacing: 0.1em;
+  background-color: var(--bg-sub);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  margin-bottom: 0.5rem;
+}
+
+.hero-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.hero-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Photo Gallery Section */
+.photo-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.main-photo-card {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.hero-image {
+  width: 100%;
+  height: 14rem;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  color: white;
+  padding: 1rem 0.875rem 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.grid-photo-item {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  height: 7.5rem;
+}
+
+.grid-photo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.grid-photo-item span {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
+  text-align: center;
+}
+
+/* Info Article Card */
+.info-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-intro {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.info-body {
+  font-size: 0.875rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.slogan-box {
+  margin-top: 0.5rem;
+  background-color: var(--bg-sub);
+  border-left: 4px solid var(--accent-earth);
+  padding: 0.875rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-earth);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+/* =======================================================
+   새로 추가된 사진(전단지) 관련 스타일
+   ======================================================= */
+.section-card {
+  padding: 1.25rem;
+}
+
+.section-header-badge {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.red-badge {
+  background-color: #D9534F;
+  color: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(217, 83, 79, 0.2);
+}
+
+.section-header-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.blue-banner {
+  background-color: #2B6CB0;
+  color: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(43, 108, 176, 0.2);
+}
+
+/* 동참하는 길 스타일 */
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.feature-num {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #B93829;
+  line-height: 1.4;
+}
+
+.feature-desc {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: 0.25rem;
+}
+
+/* 기도제목 스타일 */
+.prayer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  margin-top: 0.5rem;
+}
+
+.prayer-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.prayer-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2B6CB0;
+  line-height: 1.4;
+}
+
+.prayer-desc {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: 0.25rem;
+}
+
+.prayer-sublist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding-left: 0.5rem;
+}
+
+.prayer-sublist li {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* 후원 안내 카드 */
+.donate-card {
+  background-color: #FAF7EF;
+  border: 2px dashed #C5BC9C;
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+
+.donate-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #3A2E2B;
+}
+
+.donate-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.donate-info-text {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.account-details {
+  width: 100%;
+  background-color: rgba(239, 236, 225, 0.7);
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.account-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.account-label {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.account-value {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Journal Tab */
+.journal-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 /* Search Bar */
@@ -539,6 +769,27 @@ body {
   color: var(--text-muted);
 }
 
+.header-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.delete-icon-btn {
+  background: none;
+  border: none;
+  color: #A85B5B;
+  cursor: pointer;
+  padding: 0.125rem;
+  display: flex;
+  align-items: center;
+  border-radius: 0.25rem;
+}
+
+.delete-icon-btn:hover {
+  background-color: rgba(168, 91, 91, 0.1);
+}
+
 .author-info {
   display: flex;
   align-items: center;
@@ -653,6 +904,15 @@ body {
   justify-content: space-between;
   font-size: 0.6875rem;
   color: var(--text-muted);
+}
+
+.delete-comment-btn {
+  background: none;
+  border: none;
+  color: #A85B5B;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .comment-text {
