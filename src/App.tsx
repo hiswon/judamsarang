@@ -563,10 +563,6 @@ export default function App() {
                   </ul>
                 </div>
 
-                <div className="prayer-item">
-                  <h4 className="prayer-title">3. 협력 선교사를 위하여.</h4>
-                  <p className="prayer-desc">• 본 선교회가 협력 선교사로 파송한 김상재 목사의 안전과 사역과 건강을 지켜주옵소서.</p>
-                </div>
               </div>
             </article>
 
@@ -585,7 +581,7 @@ export default function App() {
                 <div className="account-details">
                   <div className="account-row">
                     <span className="account-label">후원 문의:</span>
-                    <span className="account-value">김상재 목사 / 탄자니아 선교회</span>
+                    <span className="account-value">      / 탄자니아 선교회</span>
                   </div>
                 </div>
               </div>
