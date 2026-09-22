@@ -1,18 +1,21 @@
-/* 전역 스타일 및 베이지/아이보리 감성 테마 설정 */
+/* 전역 스타일 및 프리미엄 모던 감성 테마 설정 */
 :root {
-  --bg-main: #F7F4EB;
-  --bg-card: #FAF7EF;
-  --bg-sub: #EFECE1;
-  --border-color: #E5DEC9;
-  --border-hover: #D5CEB9;
-  --text-primary: #3A2E2B;
-  --text-secondary: #4A3E3D;
-  --text-muted: #8C7A6B;
-  --text-light: #B5A89B;
-  --btn-bg: #8C7A6B;
-  --btn-hover: #726254;
-  --like-color: #C85A5A;
-  --accent-earth: #A65D37;
+  --bg-main: #F7F5F0;
+  --bg-card: #FFFFFF;
+  --bg-sub: #F2EFE9;
+  --border-color: #E6E1D6;
+  --border-hover: #D5CEC0;
+  --text-primary: #2C2523;
+  --text-secondary: #4A423F;
+  --text-muted: #807368;
+  --text-light: #A89C91;
+  --btn-bg: #7C6A5C;
+  --btn-hover: #635346;
+  --like-color: #D9534F;
+  --accent-earth: #9E522B;
+  
+  /* 공통 폰트 패밀리 지정 */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 * {
@@ -24,8 +27,16 @@
 body {
   background-color: var(--bg-main);
   color: var(--text-secondary);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-family-base);
   min-height: 100vh;
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 입력 필드 및 저장된 텍스트 전체 폰트 통일 및 왼쪽 정렬 */
+input, textarea, button, select {
+  font-family: var(--font-family-base);
+  text-align: left;
 }
 
 .app-container {
@@ -38,11 +49,11 @@ body {
   position: sticky;
   top: 0;
   z-index: 30;
-  background-color: rgba(247, 244, 235, 0.95);
-  backdrop-filter: blur(8px);
+  background-color: rgba(247, 245, 240, 0.92);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-color);
-  padding: 0.75rem 1rem;
-  max-width: 36rem;
+  padding: 0.875rem 1.25rem;
+  max-width: 38rem;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -50,9 +61,9 @@ body {
 }
 
 .app-title {
-  font-size: 1.15rem;
+  font-size: 1.125rem;
   font-weight: 800;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   color: var(--accent-earth);
 }
 
@@ -79,6 +90,7 @@ body {
   padding: 0.25rem 0.5rem;
   border-radius: 0.375rem;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
 .logout-btn:hover {
@@ -89,18 +101,24 @@ body {
   background-color: var(--btn-bg);
   color: white;
   font-size: 0.75rem;
-  padding: 0.375rem 0.75rem;
+  font-weight: 600;
+  padding: 0.375rem 0.875rem;
   border-radius: 9999px;
   border: none;
   cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.login-toggle-btn:hover {
+  background-color: var(--btn-hover);
 }
 
 /* Navigation Tabs */
 .tab-navigation {
-  max-width: 36rem;
+  max-width: 38rem;
   margin: 0 auto;
   display: flex;
-  border-bottom: 2px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   background-color: var(--bg-card);
 }
 
@@ -110,21 +128,21 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.875rem 0;
+  padding: 1rem 0;
   background: transparent;
   border: none;
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--text-muted);
   cursor: pointer;
-  border-bottom: 3px solid transparent;
+  border-bottom: 2px solid transparent;
   transition: all 0.2s ease;
 }
 
 .tab-btn.active {
   color: var(--accent-earth);
   border-bottom-color: var(--accent-earth);
-  background-color: rgba(239, 236, 225, 0.4);
+  background-color: rgba(242, 239, 233, 0.5);
 }
 
 /* Auth Card */
@@ -133,22 +151,22 @@ body {
   border: 1px solid var(--border-color);
   border-radius: 1rem;
   padding: 1.25rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.875rem;
 }
 
 .auth-card-title {
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.625rem;
 }
 
 .auth-input-group {
@@ -158,24 +176,30 @@ body {
 
 .auth-input {
   flex: 1;
-  background-color: rgba(239, 236, 225, 0.5);
+  background-color: var(--bg-sub);
   border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  border-radius: 0.625rem;
+  padding: 0.625rem 0.875rem;
   font-size: 0.8125rem;
   color: var(--text-primary);
   outline: none;
+  transition: border-color 0.2s;
+}
+
+.auth-input:focus {
+  border-color: var(--btn-bg);
 }
 
 .auth-submit-btn {
   background-color: var(--btn-bg);
   color: white;
   border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
+  border-radius: 0.625rem;
+  padding: 0.625rem 1rem;
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .auth-submit-btn:hover {
@@ -185,7 +209,7 @@ body {
 .admin-notice {
   background-color: var(--bg-sub);
   border-radius: 0.75rem;
-  padding: 0.875rem;
+  padding: 1rem;
   text-align: center;
   font-size: 0.8125rem;
   color: var(--text-muted);
@@ -194,9 +218,9 @@ body {
 
 /* Main Layout */
 .app-main {
-  max-width: 36rem;
+  max-width: 38rem;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1.25rem 1rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -211,7 +235,7 @@ body {
 
 .hero-banner {
   text-align: center;
-  padding: 1rem 0;
+  padding: 1.25rem 0 0.5rem;
 }
 
 .hero-badge {
@@ -219,9 +243,9 @@ body {
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--accent-earth);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   background-color: var(--bg-sub);
-  padding: 0.25rem 0.75rem;
+  padding: 0.25rem 0.875rem;
   border-radius: 9999px;
   margin-bottom: 0.5rem;
 }
@@ -230,12 +254,14 @@ body {
   font-size: 1.75rem;
   font-weight: 800;
   color: var(--text-primary);
+  letter-spacing: -0.02em;
 }
 
 .hero-subtitle {
-  font-size: 0.95rem;
+  font-size: 0.9375rem;
   color: var(--text-muted);
   font-weight: 500;
+  margin-top: 0.25rem;
 }
 
 /* Photo Gallery Section */
@@ -247,14 +273,14 @@ body {
 
 .main-photo-card {
   position: relative;
-  border-radius: 1rem;
+  border-radius: 1.25rem;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .hero-image {
   width: 100%;
-  height: 14rem;
+  height: 15rem;
   object-fit: cover;
   display: block;
 }
@@ -264,11 +290,12 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
   color: white;
-  padding: 1rem 0.875rem 0.625rem;
+  padding: 1.25rem 1rem 0.75rem;
   font-size: 0.8125rem;
   font-weight: 500;
+  text-align: left;
 }
 
 .photo-grid {
@@ -279,9 +306,10 @@ body {
 
 .grid-photo-item {
   position: relative;
-  border-radius: 0.75rem;
+  border-radius: 0.875rem;
   overflow: hidden;
-  height: 7.5rem;
+  height: 8rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .grid-photo-item img {
@@ -295,10 +323,10 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.55);
   color: white;
   font-size: 0.7rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0.375rem 0.5rem;
   text-align: center;
 }
 
@@ -306,67 +334,65 @@ body {
 .info-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 1rem;
-  padding: 1.25rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.125rem;
 }
 
 .info-intro {
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 0.9375rem;
+  line-height: 1.65;
   color: var(--text-primary);
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.875rem;
   border-bottom: 1px solid var(--border-color);
+  text-align: left;
 }
 
 .info-body {
   font-size: 0.875rem;
-  line-height: 1.75;
+  line-height: 1.8;
   color: var(--text-secondary);
   display: flex;
   flex-direction: column;
   gap: 0.875rem;
+  text-align: left;
 }
 
 .slogan-box {
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
   background-color: var(--bg-sub);
   border-left: 4px solid var(--accent-earth);
-  padding: 0.875rem;
-  border-radius: 0 0.5rem 0.5rem 0;
+  padding: 1rem;
+  border-radius: 0 0.75rem 0.75rem 0;
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--accent-earth);
   text-align: center;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
 
-/* =======================================================
-   새로 추가된 사진(전단지) 관련 스타일
-   ======================================================= */
+/* 추가 정보 카드 스타일 */
 .section-card {
-  padding: 1.25rem;
+  padding: 1.5rem;
 }
 
 .section-header-badge {
-  align-self: center;
+  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1.25rem;
+  padding: 0.5rem 1.125rem;
   border-radius: 9999px;
-  font-size: 0.9rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  font-size: 0.875rem;
+  font-weight: 700;
 }
 
 .red-badge {
   background-color: #D9534F;
   color: #FFFFFF;
-  box-shadow: 0 2px 4px rgba(217, 83, 79, 0.2);
 }
 
 .section-header-banner {
@@ -374,26 +400,25 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.625rem 1rem;
-  border-radius: 2rem;
-  font-size: 0.95rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
+  padding: 0.625rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.9375rem;
+  font-weight: 700;
   text-align: center;
 }
 
 .blue-banner {
   background-color: #2B6CB0;
   color: #FFFFFF;
-  box-shadow: 0 2px 4px rgba(43, 108, 176, 0.2);
 }
 
 /* 동참하는 길 스타일 */
 .feature-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.125rem;
   margin-top: 0.5rem;
+  text-align: left;
 }
 
 .feature-item {
@@ -407,13 +432,14 @@ body {
   font-weight: 700;
   color: #B93829;
   line-height: 1.4;
+  text-align: left;
 }
 
 .feature-desc {
   font-size: 0.8125rem;
   color: var(--text-secondary);
-  line-height: 1.6;
-  padding-left: 0.25rem;
+  line-height: 1.65;
+  text-align: left;
 }
 
 /* 기도제목 스타일 */
@@ -422,6 +448,7 @@ body {
   flex-direction: column;
   gap: 1.125rem;
   margin-top: 0.5rem;
+  text-align: left;
 }
 
 .prayer-item {
@@ -435,13 +462,14 @@ body {
   font-weight: 700;
   color: #2B6CB0;
   line-height: 1.4;
+  text-align: left;
 }
 
 .prayer-desc {
   font-size: 0.8125rem;
   color: var(--text-secondary);
-  line-height: 1.6;
-  padding-left: 0.25rem;
+  line-height: 1.65;
+  text-align: left;
 }
 
 .prayer-sublist {
@@ -449,21 +477,23 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.375rem;
-  padding-left: 0.5rem;
+  padding-left: 0.25rem;
+  text-align: left;
 }
 
 .prayer-sublist li {
   font-size: 0.8125rem;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.55;
+  text-align: left;
 }
 
 /* 후원 안내 카드 */
 .donate-card {
-  background-color: #FAF7EF;
-  border: 2px dashed #C5BC9C;
-  border-radius: 1rem;
-  padding: 1.25rem;
+  background-color: var(--bg-card);
+  border: 1.5px dashed var(--border-hover);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
 }
 
 .donate-header {
@@ -471,16 +501,16 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-size: 1rem;
-  font-weight: 800;
-  color: #3A2E2B;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .donate-box {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.875rem;
   text-align: center;
 }
 
@@ -491,8 +521,8 @@ body {
 
 .account-details {
   width: 100%;
-  background-color: rgba(239, 236, 225, 0.7);
-  padding: 0.75rem 1rem;
+  background-color: var(--bg-sub);
+  padding: 0.875rem 1rem;
   border-radius: 0.75rem;
   display: flex;
   flex-direction: column;
@@ -531,7 +561,7 @@ body {
 
 .search-icon {
   position: absolute;
-  left: 0.75rem;
+  left: 0.875rem;
   top: 50%;
   transform: translateY(-50%);
   width: 1rem;
@@ -543,20 +573,26 @@ body {
   width: 100%;
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 1rem;
-  padding: 0.5rem 1rem 0.5rem 2.25rem;
+  border-radius: 0.875rem;
+  padding: 0.625rem 1rem 0.625rem 2.375rem;
   font-size: 0.875rem;
   color: var(--text-primary);
   outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input:focus {
+  border-color: var(--btn-bg);
+  box-shadow: 0 0 0 3px rgba(124, 106, 92, 0.1);
 }
 
 /* Editor Card */
 .editor-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 1rem;
+  border-radius: 1.25rem;
   padding: 1.25rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -567,11 +603,16 @@ body {
   background: transparent;
   border: none;
   border-bottom: 1px solid var(--border-color);
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.625rem;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   outline: none;
+  text-align: left;
+}
+
+.editor-title:focus {
+  border-bottom-color: var(--btn-bg);
 }
 
 .editor-textarea {
@@ -579,17 +620,19 @@ body {
   background: transparent;
   border: none;
   font-size: 0.875rem;
-  line-height: 1.5;
+  line-height: 1.65;
   color: var(--text-primary);
   outline: none;
   resize: none;
+  text-align: left;
+  min-height: 5rem;
 }
 
 .drawing-preview {
   position: relative;
   display: inline-block;
   border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   overflow: hidden;
   background-color: white;
   align-self: start;
@@ -603,9 +646,9 @@ body {
 
 .preview-close {
   position: absolute;
-  top: 0.25rem;
-  right: 0.25rem;
-  background-color: rgba(58, 46, 43, 0.6);
+  top: 0.375rem;
+  right: 0.375rem;
+  background-color: rgba(44, 37, 35, 0.7);
   color: white;
   border: none;
   border-radius: 9999px;
@@ -621,6 +664,7 @@ body {
 
 .tag-badge {
   font-size: 0.75rem;
+  font-weight: 500;
   background-color: var(--bg-sub);
   color: var(--text-muted);
   padding: 0.25rem 0.625rem;
@@ -641,10 +685,10 @@ body {
 }
 
 .tag-input {
-  background-color: rgba(239, 236, 225, 0.5);
+  background-color: var(--bg-sub);
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
-  padding: 0.25rem 0.625rem;
+  padding: 0.375rem 0.625rem;
   font-size: 0.75rem;
   color: var(--text-primary);
   outline: none;
@@ -656,15 +700,15 @@ body {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid rgba(229, 222, 201, 0.6);
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
 }
 
 .selector-group {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.875rem;
   font-size: 0.75rem;
   color: var(--text-muted);
 }
@@ -719,6 +763,7 @@ body {
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .tool-icon-btn:hover {
@@ -732,11 +777,12 @@ body {
   background-color: var(--btn-bg);
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 0.75rem;
+  border-radius: 0.625rem;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   border: none;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .submit-btn:hover {
@@ -753,12 +799,13 @@ body {
 .post-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 1rem;
+  border-radius: 1.25rem;
   padding: 1.25rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.875rem;
+  text-align: left;
 }
 
 .post-card-header {
@@ -797,28 +844,30 @@ body {
 }
 
 .author-name {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
 .badge-sm {
   background-color: var(--bg-sub);
   padding: 0.125rem 0.5rem;
-  border-radius: 0.25rem;
+  border-radius: 0.375rem;
   font-size: 0.6875rem;
+  color: var(--text-muted);
 }
 
 .post-card-title {
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: var(--text-primary);
+  text-align: left;
 }
 
 .post-drawing {
-  margin: 0.5rem 0;
+  margin: 0.25rem 0;
   background-color: white;
   padding: 0.5rem;
-  border-radius: 0.75rem;
+  border-radius: 0.875rem;
   border: 1px solid var(--border-color);
   display: flex;
   justify-content: center;
@@ -831,9 +880,11 @@ body {
 
 .post-content {
   font-size: 0.875rem;
-  line-height: 1.6;
+  line-height: 1.7;
   color: var(--text-secondary);
-  white-space: pre-line;
+  white-space: pre-wrap;
+  word-break: break-word;
+  text-align: left;
 }
 
 .expand-btn {
@@ -841,7 +892,7 @@ body {
   border: none;
   font-size: 0.75rem;
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -856,9 +907,9 @@ body {
 .action-row {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   padding-top: 0.75rem;
-  border-top: 1px solid rgba(229, 222, 201, 0.6);
+  border-top: 1px solid var(--border-color);
   font-size: 0.75rem;
   color: var(--text-muted);
 }
@@ -866,11 +917,12 @@ body {
 .action-btn {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.375rem;
   background: none;
   border: none;
   color: inherit;
   cursor: pointer;
+  font-weight: 500;
 }
 
 .action-btn.liked {
@@ -884,19 +936,20 @@ body {
 /* Comments */
 .comments-section {
   padding-top: 0.75rem;
-  border-top: 1px solid rgba(229, 222, 201, 0.4);
+  border-top: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
 .comment-item {
-  background-color: rgba(239, 236, 225, 0.5);
-  padding: 0.625rem;
+  background-color: var(--bg-sub);
+  padding: 0.625rem 0.875rem;
   border-radius: 0.75rem;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  text-align: left;
 }
 
 .comment-header {
@@ -917,7 +970,10 @@ body {
 
 .comment-text {
   font-size: 0.75rem;
+  line-height: 1.5;
   color: var(--text-secondary);
+  text-align: left;
+  white-space: pre-wrap;
 }
 
 .comment-form {
@@ -927,21 +983,27 @@ body {
 
 .comment-input {
   flex: 1;
-  background-color: rgba(239, 236, 225, 0.6);
+  background-color: var(--bg-sub);
   border: 1px solid var(--border-color);
-  border-radius: 0.75rem;
-  padding: 0.375rem 0.75rem;
+  border-radius: 0.625rem;
+  padding: 0.5rem 0.75rem;
   font-size: 0.75rem;
   color: var(--text-primary);
   outline: none;
+  text-align: left;
+}
+
+.comment-input:focus {
+  border-color: var(--btn-bg);
 }
 
 .comment-submit-btn {
   background-color: var(--btn-bg);
   color: white;
-  padding: 0.375rem 0.75rem;
-  border-radius: 0.75rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.625rem;
   font-size: 0.75rem;
+  font-weight: 600;
   border: none;
   cursor: pointer;
 }
@@ -951,7 +1013,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 50;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -962,13 +1024,14 @@ body {
 .modal-content {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 1rem;
-  padding: 1rem;
+  border-radius: 1.25rem;
+  padding: 1.25rem;
   max-width: 24rem;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.875rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .modal-header {
@@ -979,11 +1042,11 @@ body {
 
 .modal-title {
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.375rem;
 }
 
 .canvas-wrapper {
@@ -1004,11 +1067,12 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 0.5rem;
+  padding-top: 0.25rem;
 }
 
 .clear-btn {
   font-size: 0.75rem;
+  font-weight: 500;
   color: #A85B5B;
   padding: 0.375rem 0.75rem;
   border-radius: 0.5rem;
@@ -1019,6 +1083,7 @@ body {
 
 .save-canvas-btn {
   font-size: 0.75rem;
+  font-weight: 600;
   background-color: var(--btn-bg);
   color: white;
   padding: 0.375rem 1rem;
