@@ -30,7 +30,9 @@ import {
   ChevronDown, 
   ChevronUp, 
   LogOut,
-  Lock
+  Lock,
+  Globe,
+  BookOpen
 } from 'lucide-react';
 
 import { auth, db } from './firebase';
@@ -40,7 +42,7 @@ import './App.css';
 // 관리자 계정 정보 설정
 // ==========================================
 const ALLOWED_ADMINS = ['judam1', 'judam2', 'judam3'];
-const DOMAIN_SUFFIX = '@father-app.com'; // 아이디를 이메일 형식으로 자동 전환하기 위한 도메인
+const DOMAIN_SUFFIX = '@father-app.com';
 
 // ==========================================
 // Type Definitions
@@ -80,6 +82,9 @@ interface PostCardProps {
 // Main Component
 // ==========================================
 export default function App() {
+  // Navigation State ('info': 전면 선교회 소개, 'journal': 기존 글 저장 게시판)
+  const [activeTab, setActiveTab] = useState<'info' | 'journal'>('info');
+
   const [user, setUser] = useState<User | null>(null);
   const [adminId, setAdminId] = useState<string>('');
   
@@ -105,7 +110,7 @@ export default function App() {
   const [drawingDataUrl, setDrawingDataUrl] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // Auth Listener (익명 로그인 사용 안함)
+  // Auth Listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser && currentUser.email) {
@@ -144,7 +149,6 @@ export default function App() {
         };
       });
 
-      // 최신순 정렬
       fetchedPosts.sort((a, b) => {
         const timeA = a.createdAt?.toMillis() || 0;
         const timeB = b.createdAt?.toMillis() || 0;
@@ -175,13 +179,11 @@ export default function App() {
     const email = `${cleanId}${DOMAIN_SUFFIX}`;
 
     try {
-      // 기존 계정 로그인 시도
       await signInWithEmailAndPassword(auth, email, loginPassword);
       setShowLoginForm(false);
       setLoginInputId('');
       setLoginPassword('');
     } catch (err: any) {
-      // 계정이 없으면 자동 회원가입 후 로그인
       if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
         try {
           await createUserWithEmailAndPassword(auth, email, loginPassword);
@@ -269,7 +271,7 @@ export default function App() {
     setTags(tags.filter((t) => t !== tagToRemove));
   };
 
-  // Submit Post (관리자만 실행 가능)
+  // Submit Post
   const handleSubmitPost = async (e: FormEvent) => {
     e.preventDefault();
     if (!user || !adminId) {
@@ -356,7 +358,9 @@ export default function App() {
     <div className="app-container">
       {/* Top Header */}
       <header className="app-header">
-        <h1 className="app-title">공감과 기록</h1>
+        <h1 className="app-title">
+          {activeTab === 'info' ? '탄자니아 선교회' : '공감과 기록'}
+        </h1>
         <div className="header-user-info">
           {adminId ? (
             <>
@@ -402,146 +406,204 @@ export default function App() {
           </section>
         )}
 
-        {/* Search Bar */}
-        <div className="search-container">
-          <Search className="search-icon" />
-          <input
-            type="text"
-            placeholder="태그나 키워드로 검색해보세요..."
-            value={searchQuery}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-        </div>
+        {/* TAB 1: 전면 선교회 소개 페이지 */}
+        {activeTab === 'info' && (
+          <article className="hero-card">
+            <div className="hero-header-banner">
+              <span className="sub-foundation-title">NEW LIFE FOUNDATION</span>
+              <h2 className="main-mission-title">탄자니아 선교회</h2>
+              <span style={{ fontSize: '0.875rem', opacity: 0.95 }}>Tanzania Mission</span>
+            </div>
 
-        {/* Editor Card (관리자로 로그인한 경우에만 작성 가능) */}
-        {adminId ? (
-          <section className="editor-card">
-            <input
-              type="text"
-              placeholder="오늘 하루의 제목 (선택)"
-              value={title}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-              className="editor-title"
-            />
+            <div className="hero-body">
+              <p className="mission-paragraph">
+                본 선교회는 탄자니아(Moshi)를 중심으로 동아프리카를 복음화하고자하는 선교단체입니다.
+              </p>
+              
+              <p className="mission-paragraph">
+                지금 아프리카는 최첨단 과학문명이 발달한 오늘날 세계속에서도 과거 400년동안 식민지의 착취와 약탈과 노예로 땅이 황폐화되고 산업도, 상업도없이 가난과 질병과 무지 가운데서 비참하게 살아가는 곳입니다.
+              </p>
 
-            <textarea
-              rows={4}
-              placeholder="오늘 어떤 마음으로 하루를 보내셨나요? 편안하게 기록해보세요..."
-              value={content}
-              onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
-              className="editor-textarea"
-            />
-
-            {drawingDataUrl && (
-              <div className="drawing-preview">
-                <img src={drawingDataUrl} alt="내 그림 예시" />
-                <button onClick={() => setDrawingDataUrl(null)} className="preview-close">
-                  <X style={{ width: 12, height: 12 }} />
-                </button>
-              </div>
-            )}
-
-            {tags.length > 0 && (
-              <div className="tag-list">
-                {tags.map((tag) => (
-                  <span key={tag} className="tag-badge">
-                    #{tag}
-                    <button onClick={() => handleRemoveTag(tag)}>
-                      <X style={{ width: 12, height: 12 }} />
-                    </button>
-                  </span>
-                ))}
-              </div>
-            )}
-
-            <form onSubmit={handleAddTag}>
-              <input
-                type="text"
-                placeholder="태그 입력 후 Enter (#일상)"
-                value={tagInput}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setTagInput(e.target.value)}
-                className="tag-input"
-              />
-            </form>
-
-            <div className="editor-toolbar">
-              <div className="selector-group">
-                <div className="option-group">
-                  <span>날씨:</span>
-                  {['맑음', '구름', '비'].map((w) => (
-                    <button
-                      key={w}
-                      type="button"
-                      onClick={() => setSelectedWeather(w)}
-                      className={`option-btn ${selectedWeather === w ? 'active' : ''}`}
-                    >
-                      {w === '맑음' && <Sun style={{ width: 14, height: 14 }} />}
-                      {w === '구름' && <Cloud style={{ width: 14, height: 14 }} />}
-                      {w === '비' && <Umbrella style={{ width: 14, height: 14 }} />}
-                    </button>
-                  ))}
+              <div className="highlight-box">
+                <div className="highlight-title">🎯 핵심 선교 사역 목적</div>
+                <div className="highlight-desc">
+                  이러한 곳에 가장 효과적인 선교인 자라나는 청소년들(학원 선교를 통해서)에게 복음을 전하고 그리고 불치의 병이라 불리우는 에이즈 환자들에게 (의료선교를 통해서) 복음을 전해서 이들의 삶과 영혼을 구원하는데 목적을 하고 있습니다.
                 </div>
-
-                <div className="option-group">
-                  <span>기분:</span>
-                  {['평온', '기쁨', '우울'].map((m) => (
-                    <button
-                      key={m}
-                      type="button"
-                      onClick={() => setSelectedMood(m)}
-                      className={`text-option-btn ${selectedMood === m ? 'active' : ''}`}
-                    >
-                      {m}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="toolbar-actions">
-                <button
-                  type="button"
-                  onClick={() => setIsCanvasOpen(true)}
-                  className="tool-icon-btn"
-                  title="손그림 그리기"
-                >
-                  <PenTool style={{ width: 16, height: 16 }} />
-                </button>
-                
-                <button type="button" onClick={handleSubmitPost} className="submit-btn">
-                  <Send style={{ width: 14, height: 14 }} />
-                  <span>남기기</span>
-                </button>
               </div>
             </div>
-          </section>
-        ) : (
-          <div className="admin-notice">
-            <Lock style={{ width: 16, height: 16, display: 'block', margin: '0 auto 0.25rem' }} />
-            글 작성 권한은 지정된 관리자만 사용할 수 있습니다.
-          </div>
+
+            <div className="footer-slogan">
+              A PLACE WHERE WORLD-TRANSFORMERS ARE TRANSFORMED
+            </div>
+          </article>
         )}
 
-        {/* Post List */}
-        <section className="post-list">
-          {filteredPosts.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem 0', color: '#9E8E81', fontSize: '0.875rem' }}>
-              {searchQuery ? '검색 결과가 없습니다.' : '등록된 이야기 가 없습니다.'}
-            </div>
-          ) : (
-            filteredPosts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                currentUserId={user ? user.uid : 'anonymous_visitor'}
-                onToggleLike={handleToggleLike}
-                onAddComment={handleAddComment}
-                onSelectTag={(t) => setSearchQuery(t)}
+        {/* TAB 2: 기존 글 저장/공감 게시판 */}
+        {activeTab === 'journal' && (
+          <>
+            {/* Search Bar */}
+            <div className="search-container">
+              <Search className="search-icon" />
+              <input
+                type="text"
+                placeholder="태그나 키워드로 검색해보세요..."
+                value={searchQuery}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                className="search-input"
               />
-            ))
-          )}
-        </section>
+            </div>
+
+            {/* Editor Card (관리자 작성) */}
+            {adminId ? (
+              <section className="editor-card">
+                <input
+                  type="text"
+                  placeholder="오늘 하루의 제목 (선택)"
+                  value={title}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+                  className="editor-title"
+                />
+
+                <textarea
+                  rows={4}
+                  placeholder="오늘 어떤 마음으로 하루를 보내셨나요? 편안하게 기록해보세요..."
+                  value={content}
+                  onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
+                  className="editor-textarea"
+                />
+
+                {drawingDataUrl && (
+                  <div className="drawing-preview">
+                    <img src={drawingDataUrl} alt="내 그림 예시" />
+                    <button onClick={() => setDrawingDataUrl(null)} className="preview-close">
+                      <X style={{ width: 12, height: 12 }} />
+                    </button>
+                  </div>
+                )}
+
+                {tags.length > 0 && (
+                  <div className="tag-list">
+                    {tags.map((tag) => (
+                      <span key={tag} className="tag-badge">
+                        #{tag}
+                        <button onClick={() => handleRemoveTag(tag)}>
+                          <X style={{ width: 12, height: 12 }} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <form onSubmit={handleAddTag}>
+                  <input
+                    type="text"
+                    placeholder="태그 입력 후 Enter (#일상)"
+                    value={tagInput}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setTagInput(e.target.value)}
+                    className="tag-input"
+                  />
+                </form>
+
+                <div className="editor-toolbar">
+                  <div className="selector-group">
+                    <div className="option-group">
+                      <span>날씨:</span>
+                      {['맑음', '구름', '비'].map((w) => (
+                        <button
+                          key={w}
+                          type="button"
+                          onClick={() => setSelectedWeather(w)}
+                          className={`option-btn ${selectedWeather === w ? 'active' : ''}`}
+                        >
+                          {w === '맑음' && <Sun style={{ width: 14, height: 14 }} />}
+                          {w === '구름' && <Cloud style={{ width: 14, height: 14 }} />}
+                          {w === '비' && <Umbrella style={{ width: 14, height: 14 }} />}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="option-group">
+                      <span>기분:</span>
+                      {['평온', '기쁨', '우울'].map((m) => (
+                        <button
+                          key={m}
+                          type="button"
+                          onClick={() => setSelectedMood(m)}
+                          className={`text-option-btn ${selectedMood === m ? 'active' : ''}`}
+                        >
+                          {m}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="toolbar-actions">
+                    <button
+                      type="button"
+                      onClick={() => setIsCanvasOpen(true)}
+                      className="tool-icon-btn"
+                      title="손그림 그리기"
+                    >
+                      <PenTool style={{ width: 16, height: 16 }} />
+                    </button>
+                    
+                    <button type="button" onClick={handleSubmitPost} className="submit-btn">
+                      <Send style={{ width: 14, height: 14 }} />
+                      <span>남기기</span>
+                    </button>
+                  </div>
+                </div>
+              </section>
+            ) : (
+              <div className="admin-notice">
+                <Lock style={{ width: 16, height: 16, display: 'block', margin: '0 auto 0.25rem' }} />
+                글 작성 권한은 지정된 관리자만 사용할 수 있습니다.
+              </div>
+            )}
+
+            {/* Post List */}
+            <section className="post-list">
+              {filteredPosts.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '3rem 0', color: '#9E8E81', fontSize: '0.875rem' }}>
+                  {searchQuery ? '검색 결과가 없습니다.' : '등록된 이야기가 없습니다.'}
+                </div>
+              ) : (
+                filteredPosts.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    currentUserId={user ? user.uid : 'anonymous_visitor'}
+                    onToggleLike={handleToggleLike}
+                    onAddComment={handleAddComment}
+                    onSelectTag={(t) => setSearchQuery(t)}
+                  />
+                ))
+              )}
+            </section>
+          </>
+        )}
       </main>
+
+      {/* 하단 카테고리 탭 (Navigation Bar) */}
+      <nav className="bottom-nav">
+        <div className="nav-container">
+          <button 
+            className={`nav-item ${activeTab === 'info' ? 'active' : ''}`}
+            onClick={() => setActiveTab('info')}
+          >
+            <Globe style={{ width: 20, height: 20 }} />
+            <span>선교회 소개</span>
+          </button>
+          
+          <button 
+            className={`nav-item ${activeTab === 'journal' ? 'active' : ''}`}
+            onClick={() => setActiveTab('journal')}
+          >
+            <BookOpen style={{ width: 20, height: 20 }} />
+            <span>공감과 기록</span>
+          </button>
+        </div>
+      </nav>
 
       {/* Drawing Canvas Modal */}
       {isCanvasOpen && (

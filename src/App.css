@@ -12,6 +12,7 @@
   --btn-bg: #8C7A6B;
   --btn-hover: #726254;
   --like-color: #C85A5A;
+  --accent-color: #A3483B;
 }
 
 * {
@@ -29,7 +30,7 @@ body {
 
 .app-container {
   min-height: 100vh;
-  padding-bottom: 4rem;
+  padding-bottom: 5rem; /* 하단 탭 바 영역 확보 */
 }
 
 /* Header */
@@ -37,7 +38,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 30;
-  background-color: rgba(247, 244, 235, 0.9);
+  background-color: rgba(247, 244, 235, 0.95);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border-color);
   padding: 0.75rem 1rem;
@@ -49,9 +50,12 @@ body {
 }
 
 .app-title {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
 }
 
 .header-user-info {
@@ -91,6 +95,138 @@ body {
   border-radius: 9999px;
   border: none;
   cursor: pointer;
+}
+
+/* Navigation Tab Bar (하단 카테고리 탭) */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.nav-container {
+  max-width: 36rem;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 0;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: 0.25rem;
+}
+
+.nav-item.active {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+/* Main Layout */
+.app-main {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Landing / Mission Introduction Cards */
+.hero-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.hero-header-banner {
+  background-color: var(--btn-bg);
+  color: white;
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sub-foundation-title {
+  font-size: 0.8125rem;
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.main-mission-title {
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: #FFF;
+}
+
+.hero-body {
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.mission-paragraph {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  text-align: justify;
+  word-break: keep-all;
+}
+
+.highlight-box {
+  background-color: var(--bg-sub);
+  border-left: 4px solid var(--accent-color);
+  padding: 1rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+  margin: 0.5rem 0;
+}
+
+.highlight-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  margin-bottom: 0.375rem;
+}
+
+.highlight-desc {
+  font-size: 0.8438rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.footer-slogan {
+  background-color: #2D2523;
+  color: #E5DEC9;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border-top: 1px solid var(--border-color);
 }
 
 /* Auth Card */
@@ -156,16 +292,6 @@ body {
   font-size: 0.8125rem;
   color: var(--text-muted);
   border: 1px dashed var(--border-color);
-}
-
-/* Main Layout */
-.app-main {
-  max-width: 36rem;
-  margin: 0 auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
 }
 
 /* Search Bar */
